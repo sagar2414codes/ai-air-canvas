@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Air Canvas</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- MediaPipe Hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-icon">✦</span>
+      <span class="logo-text">AIR<strong>CANVAS</strong></span>
+    </div>
+    <div class="status-bar">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Initializing…</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="saveBtn" title="Save artwork">⬇</button>
+      <button class="btn-icon" id="clearBtn" title="Clear canvas">⌫</button>
+    </div>
+  </header>
+
+  <!-- ── MAIN LAYOUT ────────────────────────────────────── -->
+  <main class="app-layout">
+
+    <!-- Left toolbar -->
+    <aside class="toolbar left-toolbar">
+      <div class="tool-group">
+        <label class="tool-label">MODE</label>
+        <button class="tool-btn active" id="drawMode" data-mode="draw" title="Draw">✏</button>
+        <button class="tool-btn" id="eraseMode" data-mode="erase" title="Erase">◻</button>
+      </div>
+
+      <div class="tool-group">
+        <label class="tool-label">SIZE</label>
+        <div class="size-track">
+          <input type="range" id="brushSize" min="2" max="40" value="8" class="v-slider"/>
+        </div>
+        <span class="size-val" id="sizeVal">8</span>
+      </div>
+
+      <div class="tool-group">
+        <label class="tool-label">OPACITY</label>
+        <div class="size-track">
+          <input type="range" id="opacitySlider" min="10" max="100" value="100" class="v-slider"/>
+        </div>
+        <span class="size-val" id="opacityVal">100%</span>
+      </div>
+    </aside>
+
+    <!-- Canvas stage -->
+    <section class="stage">
+      <div class="canvas-stack">
+        <!-- Background drawing surface -->
+        <canvas id="drawingCanvas" class="layer drawing-layer"></canvas>
+        <!-- Webcam feed (mirrored) -->
+        <video id="webcam" class="layer video-layer" autoplay muted playsinline></video>
+        <!-- Landmark overlay -->
+        <canvas id="overlayCanvas" class="layer overlay-layer"></canvas>
+        <!-- Ghost cursor -->
+        <div class="cursor-ghost" id="cursorGhost"></div>
+      </div>
+
+      <!-- Gesture hint strip -->
+      <div class="gesture-hints">
+        <span class="hint"><kbd>☝</kbd> Draw</span>
+        <span class="hint"><kbd>✌</kbd> Lift</span>
+        <span class="hint"><kbd>🤙</kbd> Pinch color</span>
+        <span class="hint"><kbd>✋</kbd> Clear</span>
+      </div>
+    </section>
+
+    <!-- Right color palette -->
+    <aside class="toolbar right-toolbar">
+      <label class="tool-label">PALETTE</label>
+      <div class="color-grid" id="colorGrid"></div>
+      <label class="tool-label mt">CUSTOM</label>
+      <div class="custom-color-wrap">
+        <input type="color" id="customColor" value="#ff6ec7" class="custom-color-input"/>
+        <div class="color-preview" id="customPreview"></div>
+      </div>
+
+      <label class="tool-label mt">STROKE</label>
+      <div class="stroke-list" id="strokeList">
+        <button class="stroke-btn active" data-stroke="round">●</button>
+        <button class="stroke-btn" data-stroke="square">■</button>
+        <button class="stroke-btn" data-stroke="butt">─</button>
+      </div>
+
+      <label class="tool-label mt">BLEND</label>
+      <select class="blend-select" id="blendMode">
+        <option value="source-over">Normal</option>
+        <option value="multiply">Multiply</option>
+        <option value="screen">Screen</option>
+        <option value="overlay">Overlay</option>
+        <option value="color-dodge">Dodge</option>
+        <option value="difference">Differ</option>
+      </select>
+    </aside>
+  </main>
+
+  <!-- ── OVERLAY MESSAGES ───────────────────────────────── -->
+  <div class="permission-screen" id="permissionScreen">
+    <div class="perm-card">
+      <div class="perm-icon">🎥</div>
+      <h2>Camera Access Required</h2>
+      <p>AI Air Canvas uses your webcam to track hand gestures in real-time. No video is stored or transmitted.</p>
+      <button class="perm-btn" id="startBtn">Enable Camera</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
